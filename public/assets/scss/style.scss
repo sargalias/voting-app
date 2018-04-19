@@ -1,0 +1,44 @@
+.navbar.navbar-dark {
+  .navbar-nav {
+    .nav-link {
+      color: white;
+      &:hover {
+        color: darken(#fff, 10);
+      }
+    }
+  }
+}
+
+.list-group-item {
+  padding: 0;
+  text-align: center;
+  &:hover {
+    background-color: lighten(#17a2b8, 55);
+  }
+  a {
+    display: block;
+    padding: 1rem;
+    color: var(--dark);
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}
+
+.pagination {
+  .page-item {
+    a {
+      color: black;
+      &:hover {
+        color: black;
+        background-color: lighten(#17a2b8, 55);
+      }
+    }
+  }
+}
+
+.author-link {
+  color: #ddd;
+  text-decoration: underline;
+  font-weight: bold;
+}
