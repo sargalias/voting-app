@@ -1,0 +1,19 @@
+{
+  "name": "fcc-voting-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sargalias/fcc-voting-app.git"
+  },
+  "author": "Spyros Argalias",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sargalias/fcc-voting-app/issues"
+  },
+  "homepage": "https://github.com/sargalias/fcc-voting-app#readme"
+}
