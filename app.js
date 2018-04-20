@@ -1,11 +1,18 @@
+// Load environment variables for development
+require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
 const ejs = require('ejs');
 const session = require('express-session');
 const passport = require('passport');
 
-// Load environment varialbes for development
-require('dotenv').config();
+// Mongoose and MongoDB
+const mongoose = require('mongoose');
+// mongoose.connect(process.env.MONGODB_URI);
+mongoose.connect('mongodb://localhost/fcc_voting_app');
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
 
 
 
