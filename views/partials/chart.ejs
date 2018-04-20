@@ -4,14 +4,18 @@
 <script>
 
     let DATA = <%- JSON.stringify(data) %>;
-    let COLORS = <%- JSON.stringify(colors) %>;
     let LABELS = [];
-    <% labels.forEach((label) => {  %>
-        LABELS.push("<%= label %>");
+    <% options.forEach((option) => {  %>
+        LABELS.push("<%= option %>");
     <% }); %>
 
+    // Prepare colors
+    let COLORS = [];
+    palette('tol-rainbow', DATA.length).forEach((color) => {
+        COLORS.push('#' + color);
+    });
+
     function createChart() {
-        // const [labels, data, colors] = prepareData();
         var ctx = document.getElementById("myChart").getContext('2d');
         var myChart = new Chart(ctx, {
             type: 'bar',
