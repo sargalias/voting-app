@@ -1,6 +1,12 @@
 const express = require('express');
 const path = require('path');
 const ejs = require('ejs');
+const session = require('express-session');
+const passport = require('passport');
+
+// Load environment varialbes for development
+require('dotenv').config();
+
 
 
 const app = express();
@@ -11,6 +17,35 @@ app.set('view engine', 'ejs');
 app.get('/test', (req, res) => {
     res.render('polls/index');
 });
+
+// Session
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    // cookie: { secure: true }
+}));
+
+// Passport
+require('./config/auth-google')(passport);
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Passport routes
+app.get('/auth/google',
+    passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login'] }));
+
+app.get('/auth/google/callback',
+    passport.authenticate('google', { failureRedirect: '/' }),
+    function(req, res) {
+        res.redirect('/');
+    });
+
+
+
+
+
+
 
 const testPoll = {
     title: 'Who is your favorite superhero',
