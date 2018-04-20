@@ -39,7 +39,7 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
 app.use('/', indexRoutes);
 app.use('/polls', pollRoutes);
-app.use('/auth/google', authRoutes);
+app.use('/', authRoutes);
 app.use('/my-polls', userRoutes);
 
 
