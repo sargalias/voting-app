@@ -18,13 +18,18 @@ app.use(session({
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: true,
-    // cookie: { secure: true }
+    cookie: {secure: process.env.NODE_ENV === 'production'}
 }));
 
 // Passport
 require('./config/auth-google')(passport);
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use((req, res, next) => {
+    res.locals.user = req.user;
+    next()
+});
 
 
 // Routes
