@@ -5,6 +5,10 @@ router.get('/', (req, res) => {
     res.render('polls/index');
 });
 
+router.get('/new', (req, res) => {
+    res.render('polls/new');
+});
+
 router.get('/:id', (req, res) => {
     res.render('polls/show', {
         title: 'Who is your favorite superhero?',

@@ -49,3 +49,23 @@
   text-decoration: underline;
   font-weight: bold;
 }
+
+.user-poll {
+  box-shadow: 0 0 5px rgba(23,162,184, 0.8);
+  padding: 1rem;
+  .options {
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      li {
+        padding: 0.5rem;
+        padding-left: 2rem;
+        background-color: #fff;
+        &:nth-child(2n) {
+          background-color: transparent;
+        }
+      }
+    }
+  }
+}

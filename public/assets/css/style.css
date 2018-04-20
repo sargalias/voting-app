@@ -31,4 +31,18 @@
   text-decoration: underline;
   font-weight: bold; }
 
+.user-poll {
+  box-shadow: 0 0 5px rgba(23, 162, 184, 0.8);
+  padding: 1rem; }
+  .user-poll .options ul {
+    list-style: none;
+    margin: 0;
+    padding: 0; }
+    .user-poll .options ul li {
+      padding: 0.5rem;
+      padding-left: 2rem;
+      background-color: #fff; }
+      .user-poll .options ul li:nth-child(2n) {
+        background-color: transparent; }
+
 /*# sourceMappingURL=style.css.map */

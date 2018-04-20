@@ -1,0 +1,51 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+
+<div class="container mt-5">
+    <div class="jumbotron bg-white">
+        <h1 class="mb-3">New Poll</h1>
+        <form action="" class="mb-sm-3">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" id="title" placeholder="Enter title" required>
+            </div>
+            <div class="form-group">
+                <label for="option">Options</label>
+                <div id="options-container">
+                    <input type="text" class="form-control" id="option" name="option" placeholder="Enter option" required>
+                </div>
+                <button type="button" class="btn btn-secondary" id="add-option">Add option</button>
+                <noscript>Please enable JavaScript to be able to add more options.</noscript>
+            </div>
+            <button type="submit" class="btn btn-info">Submit</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const addOptionBtn = document.getElementById('add-option');
+    const originalOption = document.getElementById('option');
+    const optionsContainer = document.getElementById('options-container');
+
+    addOptionBtn.addEventListener('click', addOption);
+
+
+    function addOption() {
+        let attr = {
+            placeholder: originalOption.getAttribute('placeholder'),
+            name: originalOption.getAttribute('name'),
+            type: originalOption.getAttribute('type'),
+            class: originalOption.getAttribute('class')
+        };
+        let newOption = document.createElement('input');
+        for (let key in attr) {
+            newOption.setAttribute(key, attr[key]);
+        }
+        optionsContainer.appendChild(newOption);
+    }
+</script>
+
+<%- include('../partials/footer') %>
+<%- include('../partials/footer-scripts') %>
+<%- include('../partials/close') %>

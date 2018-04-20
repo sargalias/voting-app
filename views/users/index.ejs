@@ -1,6 +1,28 @@
 <%- include('../partials/header') %>
 <%- include('../partials/navbar') %>
 
+<div class="container mt-4">
+    <h1 class="mb-4">Polls</h1>
+    <a href="/polls/new" class="btn btn-info mb-4">Add poll</a>
+    <% for (let i=0; i<3; i++) { %>
+        <div class="jumbotron bg-light user-poll mb-4">
+            <div class="title">
+                <h2>Who is your favorite superhero?</h2>
+            </div>
+            <div class="options">
+                <ul>
+                    <li>Batman</li>
+                    <li>Batman</li>
+                    <li>Batman</li>
+                    <li>Batman</li>
+                </ul>
+            </div>
+            <button class="btn btn-warning text-white mr-2">Add option</button>
+            <button class="btn btn-danger">Delete</button>
+        </div>
+    <% } %>
+
+</div>
 
 
 <%- include('../partials/footer') %>
