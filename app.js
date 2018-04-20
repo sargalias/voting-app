@@ -6,24 +6,12 @@ const path = require('path');
 const ejs = require('ejs');
 const session = require('express-session');
 const passport = require('passport');
-
-// Mongoose and MongoDB
-const mongoose = require('mongoose');
-// mongoose.connect(process.env.MONGODB_URI);
-mongoose.connect('mongodb://localhost/fcc_voting_app');
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-
+const db = require('./config/database');
 
 
 const app = express();
-app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
-
-// Routes
-app.get('/test', (req, res) => {
-    res.render('polls/index');
-});
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Session
 app.use(session({
@@ -38,39 +26,14 @@ require('./config/auth-google')(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Passport routes
-app.get('/auth/google',
-    passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login'] }));
 
-app.get('/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: '/' }),
-    function(req, res) {
-        res.redirect('/');
-    });
-
-
-
-
-
-
-
-const testPoll = {
-    title: 'Who is your favorite superhero',
-    results: [
-        {option: 'Batman', votes: 20},
-        {option: 'Superman', votes: 10},
-        {option: 'Wonder Woman', votes: 5},
-        {option: 'The Flash', votes: 23},
-    ]
-};
-
-app.get('/test2', (req, res) => {
-    res.render('polls/show', {
-        title: 'Who is your favorite superhero?',
-        data: [20, 10, 5, 23],
-        options: ["Superman", "Batman", "Wonder Woman", "The Flash"]
-    });
-});
+// Routes
+// Index
+app.use(require('./routes/index'));
+// Polls
+app.use('/polls', require('./routes/polls'));
+// Passport
+app.use('/auth/google', require('./routes/auth'));
 
 
 const PORT = process.env.PORT || 3000;
