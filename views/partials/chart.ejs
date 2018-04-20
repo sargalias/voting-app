@@ -3,19 +3,12 @@
 
 <script>
 
-    const DATA = '<%= pollData %>';
-
-    function parseColorScheme(palette) {
-        let colors = [];
-        palette.forEach((color) => {
-            colors.push("#" + color);
-        });
-        return colors;
-    }
-
-    function prepareData() {
-
-    }
+    let DATA = <%- JSON.stringify(data) %>;
+    let COLORS = <%- JSON.stringify(colors) %>;
+    let LABELS = [];
+    <% labels.forEach((label) => {  %>
+        LABELS.push("<%= label %>");
+    <% }); %>
 
     function createChart() {
         // const [labels, data, colors] = prepareData();
@@ -23,16 +16,12 @@
         var myChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                // Insert labels from data;
-                labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-                // labels: labels,
+                labels: LABELS,
                 datasets: [{
                     label: '# of Votes',
                     borderWidth: 1,
-                    data: [12, 19, 3, 5, 2, 3],
-                    backgroundColor: ['#000', '#000', '#000', '#000', '#000', '#000', ]
-                    // data: data,
-                    // backgroundColor: colors,
+                    data: DATA,
+                    backgroundColor: COLORS,
                 }]
             },
             options: {
