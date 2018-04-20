@@ -4,7 +4,7 @@ const UserSchema = new mongoose.Schema({
     polls: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref:"Poll"
+            ref: "Poll"
         }
     ],
     googleId: {type: String, required: true}
