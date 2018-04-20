@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Session
 app.use(session({
-    secret: 'keyboard cat',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {secure: process.env.NODE_ENV === 'production'}
@@ -33,12 +33,14 @@ app.use((req, res, next) => {
 
 
 // Routes
-// Index
-app.use(require('./routes/index'));
-// Polls
-app.use('/polls', require('./routes/polls'));
-// Passport
-app.use('/auth/google', require('./routes/auth'));
+const indexRoutes = require('./routes/index');
+const pollRoutes = require('./routes/polls');
+const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/user');
+app.use('/', indexRoutes);
+app.use('/polls', pollRoutes);
+app.use('/auth/google', authRoutes);
+app.use('/my-polls', userRoutes);
 
 
 const PORT = process.env.PORT || 3000;
