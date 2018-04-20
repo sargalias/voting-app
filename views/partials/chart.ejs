@@ -1,0 +1,51 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+<script src="/assets/js/palette.js"></script>
+
+<script>
+
+    const DATA = '<%= pollData %>';
+
+    function parseColorScheme(palette) {
+        let colors = [];
+        palette.forEach((color) => {
+            colors.push("#" + color);
+        });
+        return colors;
+    }
+
+    function prepareData() {
+
+    }
+
+    function createChart() {
+        // const [labels, data, colors] = prepareData();
+        var ctx = document.getElementById("myChart").getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                // Insert labels from data;
+                labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+                // labels: labels,
+                datasets: [{
+                    label: '# of Votes',
+                    borderWidth: 1,
+                    data: [12, 19, 3, 5, 2, 3],
+                    backgroundColor: ['#000', '#000', '#000', '#000', '#000', '#000', ]
+                    // data: data,
+                    // backgroundColor: colors,
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:true
+                        }
+                    }]
+                }
+            }
+        });
+    }
+
+    window.onload = createChart;
+</script>

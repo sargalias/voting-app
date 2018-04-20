@@ -13,7 +13,7 @@ app.get('/test', (req, res) => {
 });
 
 app.get('/test2', (req, res) => {
-    res.render('polls/show');
+    res.render('polls/show', {pollData: "hello"});
 });
 
 
