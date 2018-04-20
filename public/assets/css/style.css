@@ -1,5 +1,10 @@
+.navbar.navbar-dark .navbar-nav .nav-item {
+  display: flex;
+  align-items: center; }
 .navbar.navbar-dark .navbar-nav .nav-link {
   color: white; }
+  .navbar.navbar-dark .navbar-nav .nav-link img {
+    max-width: 200px; }
   .navbar.navbar-dark .navbar-nav .nav-link:hover {
     color: #e6e6e6; }
 

@@ -1,7 +1,14 @@
 .navbar.navbar-dark {
   .navbar-nav {
+    .nav-item {
+      display: flex;
+      align-items: center;
+    }
     .nav-link {
       color: white;
+      img {
+        max-width: 200px;
+      }
       &:hover {
         color: darken(#fff, 10);
       }
