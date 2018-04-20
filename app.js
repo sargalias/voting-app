@@ -35,11 +35,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log('Server started on port ' + PORT);
 });
-
-// const PollSchema = new mongoose.Schema({
-//     title: {type: String, required: true},
-//     results: [{
-//         option: {type: String, required: true},
-//         votes: {type: Number, required: true}
-//     }]
-// });
