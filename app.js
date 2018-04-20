@@ -66,6 +66,7 @@ const testPoll = {
 
 app.get('/test2', (req, res) => {
     res.render('polls/show', {
+        title: 'Who is your favorite superhero?',
         data: [20, 10, 5, 23],
         colors: ["#000", "#333", "#555", "#999"],
         labels: ["Superman", "Batman", "Wonder Woman", "The Flash"]

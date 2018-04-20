@@ -8,15 +8,14 @@
         <div class="row">
 
         <div class="col-md-6 pr-lg-5">
-            <h1 class="mb-3">Who is your favorite superhero?</h1>
+            <h1 class="mb-3"><%= title %></h1>
             <form action="" class="mb-sm-3">
                 <div class="form-group">
                     <select name="" id="" class="custom-select">
                         <option value="" selected disabled hidden>Choose an option...</option>
-                        <option value="">Batman</option>
-                        <option value="">Superman</option>
-                        <option value="">The Flash</option>
-                        <option value="">Wonder Woman</option>
+                        <% labels.forEach((option) => { %>
+                            <option value="<%= option %>"><%= option %></option>
+                        <% }); %>
                     </select>
                 </div>
                 <button type="submit" class="btn btn-info">Submit</button>
