@@ -45,4 +45,7 @@
       .user-poll .options ul li:nth-child(2n) {
         background-color: transparent; }
 
+#options-container input {
+  position: relative; }
+
 /*# sourceMappingURL=style.css.map */
