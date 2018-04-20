@@ -9,7 +9,11 @@ app.set('view engine', 'ejs');
 
 // Routes
 app.get('/test', (req, res) => {
-    res.render('index');
+    res.render('polls/index');
+});
+
+app.get('/test2', (req, res) => {
+    res.render('polls/show');
 });
 
 
