@@ -21,6 +21,7 @@ module.exports.create = (req, res, next) => {
     let newPoll = {} = new Poll({});
     newPoll.title = data.title;
     newPoll.results = [];
+    newPoll.user = req.user;
     data.options.forEach((option) => {
         newPoll.results.push({option: option});
     });
