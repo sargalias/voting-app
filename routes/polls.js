@@ -9,6 +9,10 @@ router.get('/new', (req, res) => {
     res.render('polls/new');
 });
 
+router.post('/', (req, res) => {
+    res.render('polls/new');
+});
+
 router.get('/:id', (req, res) => {
     res.render('polls/show', {
         title: 'Who is your favorite superhero?',
