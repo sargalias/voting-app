@@ -10,7 +10,6 @@ module.exports = function(passport) {
         function(accessToken, refreshToken, profile, done) {
             User.findOne({googleId: profile.id}, (err, user) => {
                 if (err) {
-                    console.log('err: ' + err);
                     return done(err);
                 } else if (user === null) {
                     // Create user
