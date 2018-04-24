@@ -30,26 +30,16 @@ module.exports.show = (req, res, next) => {
 
 
 module.exports.newPollValidation = [
-    // Make options an array
-    (req, res, next) => {
-        if (req.body && req.body.options) {
-            if (typeof req.body.options === "string") {
-                req.body.options = [req.body.options];
-            }
-        } else {
-            req.body.options = [];
-        }
-        next();
-    },
     body('title').trim()
         .isLength({min: 1}).withMessage('Title is required')
     ,
     body('options')
         .isArray().withMessage('Invalid format for options')
-        .isLength({min: 1}).withMessage('At least one option is required')
+        .isLength({min: 2}).withMessage('There must be at least 2 options')
     ,
     body('options.*').trim()
-        .isLength({min: 1}).withMessage('All option fields must have a value'),
+        .isLength({min: 1}).withMessage('All option fields must have a value')
+    ,
     sanitizeBody('title').trim().escape(),
     sanitizeBody('options.*').trim().escape(),
 ];
