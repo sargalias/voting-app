@@ -2,6 +2,7 @@ const router = require('express').Router();
 
 
 router.get('/', (req, res) => {
+    req.flash('success', 'Test message');
     res.render('polls/index');
 });
 
