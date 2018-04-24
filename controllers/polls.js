@@ -1,5 +1,6 @@
 const { body, validationResult } = require('express-validator/check');
 const { matchedData, sanitizeBody } = require('express-validator/filter');
+const Poll = require('../models/poll');
 
 
 module.exports.index = (req, res, next) => {
@@ -16,8 +17,20 @@ module.exports.create = (req, res, next) => {
     if (!errors.isEmpty()) {
         return res.render('polls/new', {errors: errors.array(), data: data});
     }
-    console.log(data);
-    res.redirect('/polls');
+    // Validation passed. Save poll to database.
+    let newPoll = {} = new Poll({});
+    newPoll.title = data.title;
+    newPoll.results = [];
+    data.options.forEach((option) => {
+        newPoll.results.push({option: option});
+    });
+    newPoll.save((err, poll) => {
+        if (err) {
+            return next(err);
+        }
+        console.log(poll);
+        res.redirect('/polls/' + poll.id);
+    });
 };
 
 module.exports.show = (req, res, next) => {
