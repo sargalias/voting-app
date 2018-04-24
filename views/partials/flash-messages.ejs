@@ -1,0 +1,7 @@
+<div id="messages" class="container mt-5">
+    <% Object.keys(messages).forEach((type) => { %>
+        <% messages[type].forEach((message) => { %>
+            <div class="alert alert-<%= type %>"><%= message %></div>
+        <% }); %>
+    <% }) %>
+</div>
