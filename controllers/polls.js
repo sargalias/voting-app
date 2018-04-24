@@ -65,13 +65,27 @@ module.exports.create = (req, res, next) => {
 };
 
 module.exports.show = (req, res, next) => {
-    res.render('polls/show', {
-        title: 'Who is your favorite superhero?',
-        data: [20, 10, 5, 23],
-        options: ["Superman", "Batman", "Wonder Woman", "The Flash"]
+    Poll.findById(req.params.id, (err, poll) => {
+        if (err) {
+            return next(err);
+        }
+        let pollData = parsePollData(poll);
+        console.log(pollData);
+        res.render('polls/show', pollData);
     });
 };
 
+function parsePollData(poll) {
+    let pollData = {};
+    pollData.title = poll.title;
+    pollData.data = [];
+    pollData.options = [];
+    poll.results.forEach((result) => {
+        pollData.data.push(result.votes);
+        pollData.options.push(result.option);
+    });
+    return pollData;
+}
 
 module.exports.newPollValidation = [
     body('title').trim()
