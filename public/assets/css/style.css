@@ -39,8 +39,10 @@
     margin: 0;
     padding: 0; }
     .user-poll .options ul li {
-      padding: 0.5rem;
-      padding-left: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 2rem;
       background-color: #fff; }
       .user-poll .options ul li:nth-child(2n) {
         background-color: transparent; }

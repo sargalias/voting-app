@@ -59,8 +59,10 @@
       margin: 0;
       padding: 0;
       li {
-        padding: 0.5rem;
-        padding-left: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 2rem;
         background-color: #fff;
         &:nth-child(2n) {
           background-color: transparent;
