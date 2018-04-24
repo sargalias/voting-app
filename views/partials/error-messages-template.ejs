@@ -1,0 +1,9 @@
+<% if (errors) { %>
+    <div id="error-messages" class="container mt-5">
+        <% for (error of errors) { %>
+            <div class="alert alert-danger">
+                <%= error.msg %>
+            </div>
+        <% } %>
+    </div>
+<% } %>
