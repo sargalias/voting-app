@@ -7,13 +7,13 @@
     <% user.polls.forEach((poll) => { %>
         <div class="jumbotron bg-light user-poll mb-4">
             <div class="title">
-                <h2><a href="/polls/<%= poll.id %>"><%= poll.title %></a></h2>
+                <h2><a href="/polls/<%= poll.id %>"><%- poll.title %></a></h2>
             </div>
             <div class="options">
                 <ul>
                     <% poll.results.forEach((res) => { %>
                     <li>
-                        <span><%= res.option %></span>
+                        <span><%- res.option %></span>
                         <span><%= res.votes %></span>
                     </li>
                     <% }); %>
