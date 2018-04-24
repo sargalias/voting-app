@@ -4,23 +4,22 @@
 <div class="container mt-4">
     <h1 class="mb-4">Polls</h1>
     <a href="/polls/new" class="btn btn-info mb-4">Add poll</a>
-    <% for (let i=0; i<3; i++) { %>
+    <% user.polls.forEach((poll) => { %>
         <div class="jumbotron bg-light user-poll mb-4">
             <div class="title">
-                <h2><a href="/">Who is your favorite superhero?</a></h2>
+                <h2><a href="/polls/<%= poll.id %>"><%= poll.title %></a></h2>
             </div>
             <div class="options">
                 <ul>
-                    <li>Batman</li>
-                    <li>Batman</li>
-                    <li>Batman</li>
-                    <li>Batman</li>
+                    <% poll.results.forEach((res) => { %>
+                        <li><%= res.option %> <%= res.votes %></li>
+                    <% }); %>
                 </ul>
             </div>
             <button class="btn btn-warning text-white mr-2">Add option</button>
             <button class="btn btn-danger">Delete</button>
         </div>
-    <% } %>
+    <% }); %>
 
 </div>
 
