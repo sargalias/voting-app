@@ -6,6 +6,7 @@ const path = require('path');
 const ejs = require('ejs');
 const session = require('express-session');
 const passport = require('passport');
+const flash = require('connect-flash');
 const db = require('./config/database');
 
 
@@ -24,6 +25,9 @@ app.use(session({
     saveUninitialized: true,
     cookie: {secure: process.env.NODE_ENV === 'production'}
 }));
+
+// Connect flash
+app.use(flash());
 
 // Passport
 require('./config/auth-google')(passport);
