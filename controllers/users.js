@@ -4,7 +4,6 @@ const User = require('../models/user');
 module.exports.index = (req, res, next) => {
     User.findById(req.user.id)
         .populate('polls')
-        .sort({created_at: -1})
         .exec((err, user) => {
             if (err) {
                 return next(err);

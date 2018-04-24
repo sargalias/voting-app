@@ -6,8 +6,7 @@ const PollSchema = new mongoose.Schema({
         option: {type: String, required: true},
         votes: {type: Number, default: 0, required: true}
     }],
-    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
-    created_at: {type: Date, default: Date.now}
+    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true}
 });
 
 module.exports = mongoose.model('Poll', PollSchema);
