@@ -1,6 +1,8 @@
 const { body, validationResult } = require('express-validator/check');
 const { matchedData, sanitizeBody } = require('express-validator/filter');
 const Poll = require('../models/poll');
+const User = require('../models/user');
+const async = require('async');
 
 
 module.exports.index = (req, res, next) => {
@@ -17,20 +19,39 @@ module.exports.create = (req, res, next) => {
     if (!errors.isEmpty()) {
         return res.render('polls/new', {errors: errors.array(), data: data});
     }
-    // Validation passed. Save poll to database.
-    let newPoll = {} = new Poll({});
-    newPoll.title = data.title;
-    newPoll.results = [];
-    newPoll.user = req.user;
-    data.options.forEach((option) => {
-        newPoll.results.push({option: option});
-    });
-    newPoll.save((err, poll) => {
+    // Validation passed.
+    // Find user
+    // Save new poll
+    // Save poll to user's polls
+    User.findById(req.user._id, (err, user) => {
         if (err) {
             return next(err);
         }
-        console.log(poll);
-        res.redirect('/polls/' + poll.id);
+        if (!user) {
+            err = new Error('User not found.');
+            return next(err);
+        }
+        let newPoll = {} = new Poll({});
+        newPoll.title = data.title;
+        newPoll.results = [];
+        newPoll.user = req.user;
+        data.options.forEach((option) => {
+            newPoll.results.push({option: option});
+        });
+        async.parallel({
+            savePoll: function(callback) {
+                newPoll.save(callback);
+            },
+            saveUser: function(callback) {
+                user.polls.push(newPoll);
+                user.save(callback);
+            }
+        }, function(err, results) {
+            if (err) {
+                return next(err);
+            }
+            return res.redirect('/polls/' + results.savePoll.id);
+        });
     });
 };
 
