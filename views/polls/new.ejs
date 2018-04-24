@@ -16,8 +16,37 @@
             <div class="form-group">
                 <label for="option">Options</label>
                 <div id="options-container">
-                    <input type="text" class="form-control" id="options" name="options" placeholder="Enter option" required>
-                    <input type="text" class="form-control" id="options" name="options" placeholder="Enter option" required>
+                    <%
+                        let optionsExist = false;
+                        let additionalLoops = 2;
+                        if ( locals.data && locals.data.options ) {
+                            optionsExist = true;
+                            additionalLoops -= data.options.length;
+                        }
+                    %>
+                    <% if (optionsExist) { %>
+                        <% data.options.forEach((option) => { %>
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    id="options"
+                                    name="options"
+                                    placeholder="Enter option"
+                                    value="<%= option %>"
+                                    required
+                            >
+                        <% }) %>
+                    <% } %>
+                    <% for (let i=0; i<additionalLoops; i++) { %>
+                        <input
+                                type="text"
+                                class="form-control"
+                                id="options"
+                                name="options"
+                                placeholder="Enter option"
+                                required
+                        >
+                    <% } %>
                 </div>
                 <button type="button" class="btn btn-secondary" id="add-option">Add option</button>
                 <button type="button" class="btn btn-warning" id="remove-option" disabled>Remove option</button>
