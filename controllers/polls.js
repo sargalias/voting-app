@@ -1,0 +1,55 @@
+const { body, validationResult } = require('express-validator/check');
+const { matchedData, sanitizeBody } = require('express-validator/filter');
+
+
+module.exports.index = (req, res, next) => {
+    res.render('polls/index');
+};
+
+module.exports.new = (req, res, next) => {
+    res.render('polls/new');
+};
+
+module.exports.create = (req, res, next) => {
+    const errors = validationResult(req);
+    const data = matchedData(req);
+    if (!errors.isEmpty()) {
+        return res.render('polls/new', {errors: errors.array(), data: data});
+    }
+    console.log(data);
+    res.redirect('/polls');
+};
+
+module.exports.show = (req, res, next) => {
+    res.render('polls/show', {
+        title: 'Who is your favorite superhero?',
+        data: [20, 10, 5, 23],
+        options: ["Superman", "Batman", "Wonder Woman", "The Flash"]
+    });
+};
+
+
+module.exports.newPollValidation = [
+    // Make options an array
+    (req, res, next) => {
+        if (req.body && req.body.options) {
+            if (typeof req.body.options === "string") {
+                req.body.options = [req.body.options];
+            }
+        } else {
+            req.body.options = [];
+        }
+        next();
+    },
+    body('title').trim()
+        .isLength({min: 1}).withMessage('Title is required')
+    ,
+    body('options')
+        .isArray().withMessage('Invalid format for options')
+        .isLength({min: 1}).withMessage('At least one option is required')
+    ,
+    body('options.*').trim()
+        .isLength({min: 1}).withMessage('All option fields must have a value'),
+    sanitizeBody('title').trim().escape(),
+    sanitizeBody('options.*').trim().escape(),
+];

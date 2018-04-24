@@ -1,24 +1,14 @@
 const router = require('express').Router();
+const pollController = require('../controllers/polls');
+const pc = pollController;
 
 
-router.get('/', (req, res) => {
-    res.render('polls/index');
-});
+router.get('/', pc.index);
 
-router.get('/new', (req, res) => {
-    res.render('polls/new');
-});
+router.get('/new', pc.new);
 
-router.post('/', (req, res) => {
-    res.render('polls/new');
-});
+router.post('/', pc.newPollValidation, pc.create);
 
-router.get('/:id', (req, res) => {
-    res.render('polls/show', {
-        title: 'Who is your favorite superhero?',
-        data: [20, 10, 5, 23],
-        options: ["Superman", "Batman", "Wonder Woman", "The Flash"]
-    });
-});
+router.get('/:id', pc.show);
 
 module.exports = router;
