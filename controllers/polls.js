@@ -6,7 +6,12 @@ const async = require('async');
 
 
 module.exports.index = (req, res, next) => {
-    res.render('polls/index');
+    Poll.find({}, (err, polls) => {
+        if (err) {
+            return next(err);
+        }
+        res.render('polls/index', {polls: polls});
+    });
 };
 
 module.exports.new = (req, res, next) => {
