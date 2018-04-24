@@ -13,6 +13,10 @@ const app = express();
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Body Parser
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
+
 // Session
 app.use(session({
     secret: process.env.SESSION_SECRET,
