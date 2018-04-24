@@ -20,24 +20,28 @@ module.exports.create = (req, res, next) => {
         return res.render('polls/new', {errors: errors.array(), data: data});
     }
     // Validation passed.
-    // Find user
-    // Save new poll
-    // Save poll to user's polls
-    User.findById(req.user._id, (err, user) => {
+    async.waterfall([
+        function(callback) {
+            User.findById(req.user._id, callback);
+        },
+        function(user, callback) {
+            if (!user) {
+                error = new Error('User not found.');
+                return next(error);
+            }
+            let newPoll = {} = new Poll({});
+            newPoll.title = data.title;
+            newPoll.results = [];
+            newPoll.user = req.user;
+            data.options.forEach((option) => {
+                newPoll.results.push({option: option});
+            });
+            callback(null, {newPoll: newPoll, user: user});
+        }
+    ], function(err, {newPoll, user}) {
         if (err) {
             return next(err);
         }
-        if (!user) {
-            err = new Error('User not found.');
-            return next(err);
-        }
-        let newPoll = {} = new Poll({});
-        newPoll.title = data.title;
-        newPoll.results = [];
-        newPoll.user = req.user;
-        data.options.forEach((option) => {
-            newPoll.results.push({option: option});
-        });
         async.parallel({
             savePoll: function(callback) {
                 newPoll.save(callback);
