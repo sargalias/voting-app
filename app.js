@@ -26,8 +26,12 @@ app.use(session({
     cookie: {secure: process.env.NODE_ENV === 'production'}
 }));
 
-// Connect flash
+// Connect flash and express messages
 app.use(flash());
+app.use(function (req, res, next) {
+    res.locals.messages = require('express-messages')(req, res);
+    next();
+});
 
 // Passport
 require('./config/auth-google')(passport);
