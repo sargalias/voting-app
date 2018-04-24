@@ -26,10 +26,10 @@ function addOption() {
 }
 
 function removeOption() {
-    if (optionsContainer.children.length > 1) {
+    if (optionsContainer.children.length > 2) {
         optionsContainer.removeChild(optionsContainer.lastChild);
     }
-    if (optionsContainer.children.length <= 1) {
+    if (optionsContainer.children.length <= 2) {
         removeOptionBtn.setAttribute('disabled', true);
     }
 }
