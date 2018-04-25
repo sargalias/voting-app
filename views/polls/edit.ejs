@@ -1,41 +1,38 @@
 <%- include('../header') %>
 
 
-<div class="container mt-4">
-    <h1 class="mb-4">Polls</h1>
-    <a href="/polls/new" class="btn btn-info mb-4">Add poll</a>
-    <% for (let i=user.polls.length; i>0; i--) { %>
-    <% let poll = user.polls[i-1]; %>
-    <div class="jumbotron bg-light user-poll mb-4">
-        <div class="title">
-            <h2><a href="/polls/<%= poll.id %>"><%- poll.title %></a></h2>
-        </div>
-        <div class="options">
-            <ul>
-                <% poll.results.forEach((res) => { %>
-                <li>
-                    <span><%- res.option %></span>
-                    <span><%= res.votes %></span>
-                </li>
-                <% }); %>
-                <div class="new-option-container mt-2">
-                    <input type="option" class="form-control" placeholder="Enter new option">
-                    <button class="btn btn-info">Add</button>
+<div class="container mt-5">
+    <div class="jumbotron bg-white">
+        <h1 class="mb-3">Add options</h1>
+        <p>Title: <%- poll.title %></p>
+        <p>Current options:</p>
+        <ul>
+            <% poll.results.forEach((result) => { %>
+                <li><%- result.option %> - <%= result.votes %> <%= result.votes === 1 ? 'vote' : 'votes' %></li>
+            <% }); %>
+        </ul>
+        <form action="/polls/<%= poll.id %>?_method=PUT" method="POST" class="mb-sm-3">
+            <div class="form-group">
+                <label for="option">New options</label>
+                <div id="options-container" data-min-options="1">
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="options"
+                            name="options"
+                            placeholder="Enter option"
+                            required
+                    >
                 </div>
-            </ul>
-        </div>
-        <div class="buttons">
-            <a class="btn btn-warning text-white mr-2" href="/polls/<%= poll.id %>/edit" data-id="<% poll.id %>">Add option</a>
-            <button class="btn btn-warning text-white mr-2" data-id="<% poll.id %>">Add option</button>
-            <form method="POST" action="/polls/<%= poll.id %>?_method=DELETE">
-                <button class="btn btn-danger">Delete</button>
-            </form>
-        </div>
+                <button type="button" class="btn btn-secondary" id="add-option">Add option</button>
+                <button type="button" class="btn btn-warning" id="remove-option" disabled>Remove option</button>
+                <noscript>Please enable JavaScript to be able to add more options.</noscript>
+            </div>
+            <button type="submit" class="btn btn-info">Submit</button>
+        </form>
     </div>
-    <% } %>
-
 </div>
 
+<script src="/assets/js/new-poll-form.js"></script>
 
 <%- include('../footer') %>
-

@@ -2,6 +2,8 @@ const addOptionBtn = document.getElementById('add-option');
 const removeOptionBtn = document.getElementById('remove-option');
 const originalOption = document.getElementById('options');
 const optionsContainer = document.getElementById('options-container');
+let minOptionsStr = optionsContainer.getAttribute('data-min-options') || "2";
+const minOptions = parseInt(minOptionsStr);
 
 addOptionBtn.addEventListener('click', addOption);
 removeOptionBtn.addEventListener('click', removeOption);
@@ -26,10 +28,10 @@ function addOption() {
 }
 
 function removeOption() {
-    if (optionsContainer.children.length > 2) {
+    if (optionsContainer.children.length > minOptions) {
         optionsContainer.removeChild(optionsContainer.lastChild);
     }
-    if (optionsContainer.children.length <= 2) {
+    if (optionsContainer.children.length <= minOptions) {
         removeOptionBtn.setAttribute('disabled', true);
     }
 }
