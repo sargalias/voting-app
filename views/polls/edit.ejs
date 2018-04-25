@@ -22,15 +22,17 @@
                 <div id="options-container" data-min-options="1">
                     <% if ( locals.data && locals.data.options ) { %>
                         <% data.options.forEach((option) => { %>
-                            <input
-                                    type="text"
-                                    class="form-control"
-                                    id="options"
-                                    name="options"
-                                    placeholder="Enter option"
-                                    value="<%= option %>"
-                                    required
-                            >
+                            <% if (option) { %>
+                                <input
+                                        type="text"
+                                        class="form-control"
+                                        id="options"
+                                        name="options"
+                                        placeholder="Enter option"
+                                        value="<%= option %>"
+                                        required
+                                >
+                            <% } %>
                         <% }); %>
                     <% } %>
                     <input
