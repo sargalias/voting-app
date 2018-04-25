@@ -1,7 +1,17 @@
 <%- include('../header') %>
 
 <div class="container">
-    <h1>Error page</h1>
+    <div class="alert alert-danger mt-4">
+        Error <%= error.status %> - <%= error.message %>
+    </div>
+    <p>You'll be redirected to the home page in 5 seconds...</p>
+    <a href="/" class="btn btn-info">Home</a>
 </div>
+
+<script>
+    setTimeout(() => {
+        window.location.href = '/';
+    }, 5000);
+</script>
 
 <%- include('../footer') %>

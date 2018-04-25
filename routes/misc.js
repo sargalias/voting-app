@@ -10,7 +10,7 @@ router.get('*', (req, res, next) => {
 
 // Error
 router.use((err, req, res, next) => {
-    res.render('index/error');
+    res.render('index/error', {error: err});
 });
 
 
