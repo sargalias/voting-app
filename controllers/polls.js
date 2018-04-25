@@ -3,8 +3,10 @@ const { matchedData, sanitizeBody } = require('express-validator/filter');
 const Poll = require('../models/poll');
 const User = require('../models/user');
 const async = require('async');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 
+// Index
 module.exports.index = (req, res, next) => {
     Poll.find({}, (err, polls) => {
         if (err) {
@@ -14,10 +16,12 @@ module.exports.index = (req, res, next) => {
     });
 };
 
+// New
 module.exports.new = (req, res, next) => {
     res.render('polls/new');
 };
 
+// Create
 module.exports.create = (req, res, next) => {
     const errors = validationResult(req);
     const data = matchedData(req);
@@ -64,6 +68,7 @@ module.exports.create = (req, res, next) => {
     });
 };
 
+// Show
 module.exports.show = (req, res, next) => {
     Poll.findById(req.params.id, (err, poll) => {
         if (err) {
@@ -101,3 +106,37 @@ module.exports.newPollValidation = [
     sanitizeBody('title').trim().escape(),
     sanitizeBody('options.*').trim().escape(),
 ];
+
+// Delete
+module.exports.delete = (req, res, next) => {
+    // Get user.
+    // If user contains the poll
+    // Delete poll from user and from polls.
+    // User.findById(req.user.id);
+    User.findById(req.user.id)
+        .populate('polls')
+        .exec((err, user) => {
+            let indexToDelete = null;
+            user.polls.forEach((poll, i) => {
+                if (poll._id.equals(req.params.id)) {
+                    indexToDelete = i;
+                }
+            });
+            if (indexToDelete !== null) {
+                user.polls.splice(indexToDelete, 1);
+                user.save((err) => {
+                    if (err) {
+                        return next(err);
+                    }
+                    Poll.findByIdAndRemove(req.params.id, (err) => {
+                        if (err) {
+                            return next(err);
+                        }
+                        res.redirect('/');
+                    });
+                });
+            } else {
+                return next(new Error('Poll not found'));
+            }
+        });
+};
