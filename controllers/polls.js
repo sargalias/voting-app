@@ -144,24 +144,16 @@ module.exports.delete = (req, res, next) => {
 };
 
 module.exports.edit = (req, res, next) => {
-    Poll.findById(req.params.poll_id)
-        .populate('user', '_id')
-        .exec((err, poll) => {
-            if (err) {
-                return next(err);
-            }
-            if (!poll) {
-                req.flash('Poll not found');
-                return res.redirect('/');
-            }
-            // Ensure correct user.
-            // Bring up edit poll view thing.
-            // if (poll.user._id.equals(req.user.id)) {
-                res.render('polls/edit', {poll: poll});
-            // } else {
-            //     req.flash('Not authorized');
-            //     res.redirect('/');
-            // }
+    Poll.findById(req.params.poll_id, (err, poll) => {
+        if (err) {
+            return next(err);
+        }
+        if (!poll) {
+            let err = new Error('Poll not found');
+            err.status = 404;
+            return next(err);
+        }
+        res.render('polls/edit', {poll: poll});
     });
 };
 
