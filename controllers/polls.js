@@ -106,48 +106,40 @@ module.exports.newPollValidation = [
     sanitizeBody('options.*').trim().escape(),
 ];
 
-// Delete
-module.exports.delete = (req, res, next) => {
-    async.waterfall([
-        function(callback) {
-            User.findById(req.user.id)
-                .populate('polls')
-                .exec(callback);
-        }
-    ], function(err, user) {
-        if (err) {
-            return next(err);
-        }
-        if (!user) {
-            req.flash('User not found, please login')
-            return res.redirect('/');
-        }
+function deleteUserPollParent(req) {
+    return function(callback) {
         let indexToDelete = null;
-        user.polls.forEach((poll, i) => {
-            if (poll._id.equals(req.params.poll_id)) {
+        req.user.polls.forEach((pollId, i) => {
+            if (pollId.equals(req.params.poll_id)) {
                 indexToDelete = i;
             }
         });
         if (indexToDelete !== null) {
-            async.parallel({
-                userSave: function(callback) {
-                    user.polls.splice(indexToDelete, 1);
-                    user.save((callback));
-                },
-                pollDelete: function(callback) {
-                    Poll.findByIdAndRemove(req.params.poll_id, callback);
-                }
+            req.user.polls.splice(indexToDelete, 1);
+        }
+        console.log('index to delete: ' + indexToDelete);
+        console.log(req.user);
+        req.user.save(callback);
+    }
+}
 
-            }, function(err, results) {
-                if (err) {
-                    return next(err);
-                }
-                res.redirect('/my-polls');
-            });
+function deletePollParent(req) {
+    return function(callback) {
+        Poll.findByIdAndRemove(req.params.poll_id, callback);
+    }
+}
+
+// Delete
+module.exports.delete = (req, res, next) => {
+    async.parallel({
+        delUserPoll: deleteUserPollParent(req),
+        delPoll: deletePollParent(req)
+    }, function(err, results) {
+        if (err) {
+            return next(err);
         }
-        else {
-            return next(new Error('Poll not found'));
-        }
+        req.flash('success', 'Poll deleted');
+        res.redirect('/');
     });
 };
 
