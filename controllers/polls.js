@@ -109,34 +109,45 @@ module.exports.newPollValidation = [
 
 // Delete
 module.exports.delete = (req, res, next) => {
-    // Get user.
-    // If user contains the poll
-    // Delete poll from user and from polls.
-    // User.findById(req.user.id);
-    User.findById(req.user.id)
-        .populate('polls')
-        .exec((err, user) => {
-            let indexToDelete = null;
-            user.polls.forEach((poll, i) => {
-                if (poll._id.equals(req.params.id)) {
-                    indexToDelete = i;
-                }
-            });
-            if (indexToDelete !== null) {
-                user.polls.splice(indexToDelete, 1);
-                user.save((err) => {
-                    if (err) {
-                        return next(err);
-                    }
-                    Poll.findByIdAndRemove(req.params.id, (err) => {
-                        if (err) {
-                            return next(err);
-                        }
-                        res.redirect('/');
-                    });
-                });
-            } else {
-                return next(new Error('Poll not found'));
+    async.waterfall([
+        function(callback) {
+            User.findById(req.user.id)
+                .populate('polls')
+                .exec(callback);
+        }
+    ], function(err, user) {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            req.flash('User not found, please login')
+            return res.redirect('/');
+        }
+        let indexToDelete = null;
+        user.polls.forEach((poll, i) => {
+            if (poll._id.equals(req.params.id)) {
+                indexToDelete = i;
             }
         });
+        if (indexToDelete !== null) {
+            async.parallel({
+                userSave: function(callback) {
+                    user.polls.splice(indexToDelete, 1);
+                    user.save((callback));
+                },
+                pollDelete: function(callback) {
+                    Poll.findByIdAndRemove(req.params.id, callback);
+                }
+
+            }, function(err, results) {
+                if (err) {
+                    return next(err);
+                }
+                res.redirect('/my-polls');
+            });
+        }
+        else {
+            return next(new Error('Poll not found'));
+        }
+    });
 };
