@@ -1,33 +1,33 @@
 const router = require('express').Router();
 const pc = pollController = require('../controllers/polls');
-const ut = utility = require('../utility/utility');
+const ah = authHelpers = require('../helpers/auth');
 
 
 router.get('/', pc.index);
 
-router.get('/new', ut.isLoggedInMessage("Log in to create new polls."), pc.new);
+router.get('/new', ah.isLoggedInMessage("Log in to create new polls."), pc.new);
 
-router.post('/', ut.isLoggedInMessage("Not authorized"), pc.newPollValidation, pc.create);
+router.post('/', ah.isLoggedInMessage("Not authorized"), pc.newPollValidation, pc.create);
 
 router.get('/:poll_id', pc.show);
 
 router.get('/:poll_id/edit',
-    ut.isLoggedInMessage('Not authorized, please login'),
-    ut.userOwnsPoll,
+    ah.isLoggedInMessage('Not authorized, please login'),
+    ah.userOwnsPoll,
     pc.edit
 );
 
 router.put('/:poll_id',
-    ut.isLoggedInMessage('Not authorized, please login'),
-    ut.userOwnsPoll,
+    ah.isLoggedInMessage('Not authorized, please login'),
+    ah.userOwnsPoll,
     pc.editPollPrep,
     pc.editPollValidation,
     pc.update
 );
 
 router.delete('/:poll_id',
-    ut.isLoggedInMessage('Not authorized'),
-    ut.userOwnsPoll,
+    ah.isLoggedInMessage('Not authorized'),
+    ah.userOwnsPoll,
     pc.delete
 );
 

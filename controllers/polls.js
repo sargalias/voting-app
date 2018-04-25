@@ -3,6 +3,7 @@ const { matchedData, sanitizeBody } = require('express-validator/filter');
 const Poll = require('../models/poll');
 const User = require('../models/user');
 const async = require('async');
+const pch = pollControllerHelpers = require('../helpers/poll-controller');
 
 
 // Index
@@ -34,7 +35,7 @@ function createNewPollParent(data, req) {
 }
 
 // Create
-module.exports.create = (req, res, next) => {
+function createPoll(req, res, next) {
     const errors = validationResult(req);
     const data = matchedData(req);
     if (!errors.isEmpty()) {
@@ -65,7 +66,7 @@ module.exports.create = (req, res, next) => {
         req.flash('success', 'Poll created');
         res.redirect('/my-polls');
     });
-};
+}
 
 // Show
 module.exports.show = (req, res, next) => {
@@ -73,61 +74,13 @@ module.exports.show = (req, res, next) => {
         if (err) {
             return next(err);
         }
-        let pollData = parsePollData(poll);
+        let pollData = pch.parsePollData(poll);
         console.log(pollData);
         res.render('polls/show', pollData);
     });
 };
 
-function parsePollData(poll) {
-    let pollData = {};
-    pollData.title = poll.title;
-    pollData.data = [];
-    pollData.options = [];
-    poll.results.forEach((result) => {
-        pollData.data.push(result.votes);
-        pollData.options.push(result.option);
-    });
-    return pollData;
-}
-
-function deleteUserPollParent(req) {
-    return function(callback) {
-        let indexToDelete = null;
-        req.user.polls.forEach((pollId, i) => {
-            if (pollId.equals(req.params.poll_id)) {
-                indexToDelete = i;
-            }
-        });
-        if (indexToDelete !== null) {
-            req.user.polls.splice(indexToDelete, 1);
-        }
-        console.log('index to delete: ' + indexToDelete);
-        console.log(req.user);
-        req.user.save(callback);
-    }
-}
-
-function deletePollParent(req) {
-    return function(callback) {
-        Poll.findByIdAndRemove(req.params.poll_id, callback);
-    }
-}
-
-// Delete
-module.exports.delete = (req, res, next) => {
-    async.parallel({
-        delUserPoll: deleteUserPollParent(req),
-        delPoll: deletePollParent(req)
-    }, function(err, results) {
-        if (err) {
-            return next(err);
-        }
-        req.flash('success', 'Poll deleted');
-        res.redirect('/');
-    });
-};
-
+// Edit
 module.exports.edit = (req, res, next) => {
     Poll.findById(req.params.poll_id, (err, poll) => {
         if (err) {
@@ -142,7 +95,7 @@ module.exports.edit = (req, res, next) => {
     });
 };
 
-module.exports.update = (req, res, next) => {
+function updatePoll(req, res, next) {
     const errors = validationResult(req);
     const data = matchedData(req);
     Poll.findById(req.params.poll_id, (err, poll) => {
@@ -167,39 +120,37 @@ module.exports.update = (req, res, next) => {
             res.redirect('/my-polls');
         });
     });
+}
+
+// Delete
+module.exports.delete = (req, res, next) => {
+    async.parallel({
+        delUserPoll: pch.deleteUserPollParent(req),
+        delPoll: pch.deletePollParent(req)
+    }, function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        req.flash('success', 'Poll deleted');
+        res.redirect('/');
+    });
 };
 
 
-module.exports.editPollPrep = (req, res, next) => {
-    if (req.body && !Array.isArray(req.body.options)) {
-        req.body.options = [req.body.options];
-    }
-    next();
-};
-
-
-module.exports.newPollValidation = [
-    body('title').trim()
-        .isLength({min: 1}).withMessage('Title is required')
-    ,
-    body('options')
-        .isArray().withMessage('Invalid format for options')
-        .custom((val, {req}) => {return val.length >=2}).withMessage('There must be at least 2 options')
-    ,
-    body('options.*').trim()
-        .isLength({min: 1}).withMessage('All option fields must have a value')
-    ,
-    sanitizeBody('title').trim().escape(),
-    sanitizeBody('options.*').trim().escape(),
+// Edit poll middleware
+module.exports.update = [
+    pch.editPollPrep
 ];
+pch.editPollValidation.forEach((middleware) => {
+    module.exports.update.push(middleware);
+});
+listOfFunctions.push(updatePoll);
 
-module.exports.editPollValidation = [
-    body('options')
-        .isArray().withMessage('Invalid format for options')
-        .custom((val, {req}) => {return val.length >=1}).withMessage('There must be at least 1 option')
-    ,
-    body('options.*').trim()
-        .isLength({min: 1}).withMessage('All option fields must have a value')
-    ,
-    sanitizeBody('options.*').trim().escape(),
-];
+
+// Create poll middleware
+module.exports.create = [];
+pch.newPollValidation.forEach((middleware) => {
+    module.exports.create.push(middleware);
+});
+module.exports.push(createPoll);
+
