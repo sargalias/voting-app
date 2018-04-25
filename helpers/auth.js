@@ -7,8 +7,9 @@ function isLoggedIn(req, res, next) {
         return next();
     }
     else {
-        req.flash('danger', 'Not authorized, please login');
-        res.redirect('/');
+        let err = new Error('Not authorized, please login');
+        err.status = 403;
+        return next(err);
     }
 }
 
