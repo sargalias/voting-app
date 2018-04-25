@@ -11,6 +11,8 @@ router.post('/', ut.isLoggedInMessage("Not authorized"), pc.newPollValidation, p
 
 router.get('/:id', pc.show);
 
+router.get('/:id/edit', pc.edit);
+
 router.delete('/:id',
     ut.isLoggedInMessage('Not authorized'),
     pc.delete);
