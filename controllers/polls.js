@@ -145,39 +145,28 @@ module.exports.edit = (req, res, next) => {
 module.exports.update = (req, res, next) => {
     const errors = validationResult(req);
     const data = matchedData(req);
-    console.log(data);
-    if (!errors.isEmpty()) {
-        Poll.findById(req.params.poll_id, (err, poll) => {
-            if (err) {
-                return next(err);
-            }
+    Poll.findById(req.params.poll_id, (err, poll) => {
+        if (err) {
+            return next(err);
+        }
+        if (!poll) {
+            let err = new Error('Poll could not be found');
+            err.status = 404;
+            return next(err);
+        }
+        if (!errors.isEmpty()) {
             return res.render('polls/edit', {errors: errors.array(), poll: poll, data: data});
+        }
+        data.options.forEach((option) => {
+            poll.results.push({option: option});
         });
-    }
-
-    Poll.findById(req.params.poll_id)
-        .populate('user')
-        .exec((err, poll) => {
+        poll.save((err) => {
             if (err) {
                 return next(err);
             }
-            if (!poll) {
-                return next(new Error('Poll could not be found'));
-            }
-            if (!poll.user._id.equals(req.user.id)) {
-                req.flash('Not authorized. Please login.');
-                return res.redirect('/');
-            }
-            data.options.forEach((option) => {
-                poll.results.push({option: option});
-            });
-            poll.save((err) => {
-                if (err) {
-                    return next(err);
-                }
-                res.redirect('/my-polls');
-            });
+            res.redirect('/my-polls');
         });
+    });
 };
 
 
