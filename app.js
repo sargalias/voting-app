@@ -53,10 +53,12 @@ const indexRoutes = require('./routes/index');
 const pollRoutes = require('./routes/polls');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
+const miscRoutes = require('./routes/misc');
 app.use('/', indexRoutes);
 app.use('/polls', pollRoutes);
 app.use('/', authRoutes);
 app.use('/my-polls', userRoutes);
+app.use('/', miscRoutes);
 
 
 const PORT = process.env.PORT || 3000;
