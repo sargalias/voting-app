@@ -7,7 +7,7 @@ router.get('/auth/google',
 router.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/' }),
     function(req, res) {
-        res.redirect('/');
+        res.redirect('/my-polls');
     });
 
 router.get('/logout', (req, res) => {
