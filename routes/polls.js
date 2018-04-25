@@ -9,18 +9,18 @@ router.get('/new', ut.isLoggedInMessage("Log in to create new polls."), pc.new);
 
 router.post('/', ut.isLoggedInMessage("Not authorized"), pc.newPollValidation, pc.create);
 
-router.get('/:id', pc.show);
+router.get('/:poll_id', pc.show);
 
-router.get('/:id/edit', ut.isLoggedInMessage('Not authorized, please login'), pc.edit);
+router.get('/:poll_id/edit', ut.isLoggedInMessage('Not authorized, please login'), pc.edit);
 
-router.put('/:id',
+router.put('/:poll_id',
     ut.isLoggedInMessage('Not authorized, please login'),
     pc.editPollPrep,
     pc.editPollValidation,
     pc.update
 );
 
-router.delete('/:id',
+router.delete('/:poll_id',
     ut.isLoggedInMessage('Not authorized'),
     pc.delete);
 

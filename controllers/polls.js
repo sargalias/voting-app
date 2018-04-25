@@ -3,7 +3,6 @@ const { matchedData, sanitizeBody } = require('express-validator/filter');
 const Poll = require('../models/poll');
 const User = require('../models/user');
 const async = require('async');
-const ObjectId = require('mongoose').Types.ObjectId;
 
 
 // Index
@@ -70,7 +69,7 @@ module.exports.create = (req, res, next) => {
 
 // Show
 module.exports.show = (req, res, next) => {
-    Poll.findById(req.params.id, (err, poll) => {
+    Poll.findById(req.params.poll_id, (err, poll) => {
         if (err) {
             return next(err);
         }
@@ -125,7 +124,7 @@ module.exports.delete = (req, res, next) => {
         }
         let indexToDelete = null;
         user.polls.forEach((poll, i) => {
-            if (poll._id.equals(req.params.id)) {
+            if (poll._id.equals(req.params.poll_id)) {
                 indexToDelete = i;
             }
         });
@@ -136,7 +135,7 @@ module.exports.delete = (req, res, next) => {
                     user.save((callback));
                 },
                 pollDelete: function(callback) {
-                    Poll.findByIdAndRemove(req.params.id, callback);
+                    Poll.findByIdAndRemove(req.params.poll_id, callback);
                 }
 
             }, function(err, results) {
@@ -153,7 +152,7 @@ module.exports.delete = (req, res, next) => {
 };
 
 module.exports.edit = (req, res, next) => {
-    Poll.findById(req.params.id)
+    Poll.findById(req.params.poll_id)
         .populate('user', '_id')
         .exec((err, poll) => {
             if (err) {
@@ -179,7 +178,7 @@ module.exports.update = (req, res, next) => {
     const data = matchedData(req);
     console.log(data);
     if (!errors.isEmpty()) {
-        Poll.findById(req.params.id, (err, poll) => {
+        Poll.findById(req.params.poll_id, (err, poll) => {
             if (err) {
                 return next(err);
             }
@@ -187,7 +186,7 @@ module.exports.update = (req, res, next) => {
         });
     }
 
-    Poll.findById(req.params.id)
+    Poll.findById(req.params.poll_id)
         .populate('user')
         .exec((err, poll) => {
             if (err) {
