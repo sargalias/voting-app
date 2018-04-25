@@ -82,6 +82,11 @@ button[disabled] {
   cursor: not-allowed;
 }
 
-.user-poll .buttons .btn {
-  margin-top: 0.5rem;
+.user-poll .buttons {
+  form {
+    display: inline;
+  }
+  .btn {
+    margin-top: 0.5rem;
+  }
 }

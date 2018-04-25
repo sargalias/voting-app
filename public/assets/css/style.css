@@ -53,6 +53,8 @@
 button[disabled] {
   cursor: not-allowed; }
 
+.user-poll .buttons form {
+  display: inline; }
 .user-poll .buttons .btn {
   margin-top: 0.5rem; }
 
