@@ -20,6 +20,19 @@ module.exports.new = (req, res, next) => {
     res.render('polls/new');
 };
 
+function createNewPollParent(data, req) {
+    return function(callback) {
+        let newPoll = Poll({});
+        newPoll.title = data.title;
+        newPoll.results = [];
+        newPoll.user = req.user;
+        data.options.forEach((option) => {
+            newPoll.results.push({option: option});
+        });
+        callback(null, newPoll);
+    }
+}
+
 // Create
 module.exports.create = (req, res, next) => {
     const errors = validationResult(req);
@@ -27,43 +40,30 @@ module.exports.create = (req, res, next) => {
     if (!errors.isEmpty()) {
         return res.render('polls/new', {errors: errors.array(), data: data});
     }
-    // Validation passed.
     async.waterfall([
-        function(callback) {
-            User.findById(req.user._id, callback);
-        },
-        function(user, callback) {
-            if (!user) {
-                error = new Error('User not found.');
-                return next(error);
-            }
-            let newPoll = {} = new Poll({});
-            newPoll.title = data.title;
-            newPoll.results = [];
-            newPoll.user = req.user;
-            data.options.forEach((option) => {
-                newPoll.results.push({option: option});
+        // Create poll, hasn't been saved yet
+        createNewPollParent(data, req),
+
+        // Save newPoll + add to user and save user.
+        function(newPoll, callback) {
+            async.parallel({
+                savePoll: function(callback) {
+                    newPoll.save(callback);
+                },
+                updateUser: function(callback) {
+                    req.user.polls.push(newPoll);
+                    req.user.save(callback);
+                }
+            }, function(err, results) {
+                callback(err, results);
             });
-            callback(null, {newPoll: newPoll, user: user});
         }
-    ], function(err, {newPoll, user}) {
+    ], function(err, results) {
         if (err) {
             return next(err);
         }
-        async.parallel({
-            savePoll: function(callback) {
-                newPoll.save(callback);
-            },
-            saveUser: function(callback) {
-                user.polls.push(newPoll);
-                user.save(callback);
-            }
-        }, function(err, results) {
-            if (err) {
-                return next(err);
-            }
-            return res.redirect('/polls/' + results.savePoll.id);
-        });
+        req.flash('success', 'Poll created');
+        res.redirect('/my-polls');
     });
 };
 
@@ -90,21 +90,6 @@ function parsePollData(poll) {
     });
     return pollData;
 }
-
-module.exports.newPollValidation = [
-    body('title').trim()
-        .isLength({min: 1}).withMessage('Title is required')
-    ,
-    body('options')
-        .isArray().withMessage('Invalid format for options')
-        .isLength({min: 2}).withMessage('There must be at least 2 options')
-    ,
-    body('options.*').trim()
-        .isLength({min: 1}).withMessage('All option fields must have a value')
-    ,
-    sanitizeBody('title').trim().escape(),
-    sanitizeBody('options.*').trim().escape(),
-];
 
 function deleteUserPollParent(req) {
     return function(callback) {
@@ -204,10 +189,25 @@ module.exports.editPollPrep = (req, res, next) => {
 };
 
 
+module.exports.newPollValidation = [
+    body('title').trim()
+        .isLength({min: 1}).withMessage('Title is required')
+    ,
+    body('options')
+        .isArray().withMessage('Invalid format for options')
+        .custom((val, {req}) => {return val.length >=2}).withMessage('There must be at least 2 options')
+    ,
+    body('options.*').trim()
+        .isLength({min: 1}).withMessage('All option fields must have a value')
+    ,
+    sanitizeBody('title').trim().escape(),
+    sanitizeBody('options.*').trim().escape(),
+];
+
 module.exports.editPollValidation = [
     body('options')
         .isArray().withMessage('Invalid format for options')
-        .isLength({min: 1}).withMessage('There must be at least 1 option')
+        .custom((val, {req}) => {return val.length >=1}).withMessage('There must be at least 1 option')
     ,
     body('options.*').trim()
         .isLength({min: 1}).withMessage('All option fields must have a value')
