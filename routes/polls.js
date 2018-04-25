@@ -7,7 +7,7 @@ router.get('/', pc.index);
 
 router.get('/new', ah.isLoggedInMessage("Log in to create new polls."), pc.new);
 
-router.post('/', ah.isLoggedInMessage("Not authorized"), pc.newPollValidation, pc.create);
+router.post('/', ah.isLoggedInMessage("Not authorized"), pc.create);
 
 router.get('/:poll_id', pc.show);
 
@@ -20,8 +20,6 @@ router.get('/:poll_id/edit',
 router.put('/:poll_id',
     ah.isLoggedInMessage('Not authorized, please login'),
     ah.userOwnsPoll,
-    pc.editPollPrep,
-    pc.editPollValidation,
     pc.update
 );
 
