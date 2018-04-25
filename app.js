@@ -7,6 +7,7 @@ const ejs = require('ejs');
 const session = require('express-session');
 const passport = require('passport');
 const flash = require('connect-flash');
+const methodOverride = require('method-override');
 const db = require('./config/database');
 
 
@@ -17,6 +18,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Body Parser
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
+
+// Method override
+app.use(methodOverride('_method'));
 
 // Session
 app.use(session({
