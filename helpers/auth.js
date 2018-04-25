@@ -7,7 +7,7 @@ function isLoggedIn(req, res, next) {
         return next();
     }
     else {
-        req.flash('danger', 'Not authorized');
+        req.flash('danger', 'Not authorized, please login');
         res.redirect('/');
     }
 }

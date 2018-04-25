@@ -7,24 +7,24 @@ router.get('/', pc.index);
 
 router.get('/new', ah.isLoggedInMessage("Log in to create new polls."), pc.new);
 
-router.post('/', ah.isLoggedInMessage("Not authorized"), pc.create);
+router.post('/', ah.isLoggedInMessage("Log in to create new polls"), pc.create);
 
 router.get('/:poll_id', pc.show);
 
 router.get('/:poll_id/edit',
-    ah.isLoggedInMessage('Not authorized, please login'),
+    ah.isLoggedIn,
     ah.userOwnsPoll,
     pc.edit
 );
 
 router.put('/:poll_id',
-    ah.isLoggedInMessage('Not authorized, please login'),
+    ah.isLoggedIn,
     ah.userOwnsPoll,
     pc.update
 );
 
 router.delete('/:poll_id',
-    ah.isLoggedInMessage('Not authorized'),
+    ah.isLoggedIn,
     ah.userOwnsPoll,
     pc.delete
 );
