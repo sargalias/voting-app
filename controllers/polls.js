@@ -21,6 +21,14 @@ module.exports.new = (req, res, next) => {
     res.render('polls/new');
 };
 
+// Create
+module.exports.create = [];
+pch.newPollValidation.forEach((middleware) => {
+    module.exports.create.push(middleware);
+});
+module.exports.create.push(createPoll);
+// Create end
+
 function createNewPollParent(data, req) {
     return function(callback) {
         let newPoll = Poll({});
@@ -34,7 +42,6 @@ function createNewPollParent(data, req) {
     }
 }
 
-// Create
 function createPoll(req, res, next) {
     const errors = validationResult(req);
     const data = matchedData(req);
@@ -75,7 +82,6 @@ module.exports.show = (req, res, next) => {
             return next(err);
         }
         let pollData = pch.parsePollData(poll);
-        console.log(pollData);
         res.render('polls/show', pollData);
     });
 };
@@ -94,6 +100,18 @@ module.exports.edit = (req, res, next) => {
         res.render('polls/edit', {poll: poll});
     });
 };
+
+
+
+// Edit poll middleware
+module.exports.update = [
+    pch.editPollPrep
+];
+pch.editPollValidation.forEach((middleware) => {
+    module.exports.update.push(middleware);
+});
+module.exports.update.push(updatePoll);
+
 
 function updatePoll(req, res, next) {
     const errors = validationResult(req);
@@ -135,22 +153,4 @@ module.exports.delete = (req, res, next) => {
         res.redirect('/');
     });
 };
-
-
-// Edit poll middleware
-module.exports.update = [
-    pch.editPollPrep
-];
-pch.editPollValidation.forEach((middleware) => {
-    module.exports.update.push(middleware);
-});
-listOfFunctions.push(updatePoll);
-
-
-// Create poll middleware
-module.exports.create = [];
-pch.newPollValidation.forEach((middleware) => {
-    module.exports.create.push(middleware);
-});
-module.exports.push(createPoll);
 
