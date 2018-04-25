@@ -1,0 +1,41 @@
+<%- include('../header') %>
+
+
+<div class="container mt-4">
+    <h1 class="mb-4">Polls</h1>
+    <a href="/polls/new" class="btn btn-info mb-4">Add poll</a>
+    <% for (let i=user.polls.length; i>0; i--) { %>
+    <% let poll = user.polls[i-1]; %>
+    <div class="jumbotron bg-light user-poll mb-4">
+        <div class="title">
+            <h2><a href="/polls/<%= poll.id %>"><%- poll.title %></a></h2>
+        </div>
+        <div class="options">
+            <ul>
+                <% poll.results.forEach((res) => { %>
+                <li>
+                    <span><%- res.option %></span>
+                    <span><%= res.votes %></span>
+                </li>
+                <% }); %>
+                <div class="new-option-container mt-2">
+                    <input type="option" class="form-control" placeholder="Enter new option">
+                    <button class="btn btn-info">Add</button>
+                </div>
+            </ul>
+        </div>
+        <div class="buttons">
+            <a class="btn btn-warning text-white mr-2" href="/polls/<%= poll.id %>/edit" data-id="<% poll.id %>">Add option</a>
+            <button class="btn btn-warning text-white mr-2" data-id="<% poll.id %>">Add option</button>
+            <form method="POST" action="/polls/<%= poll.id %>?_method=DELETE">
+                <button class="btn btn-danger">Delete</button>
+            </form>
+        </div>
+    </div>
+    <% } %>
+
+</div>
+
+
+<%- include('../footer') %>
+
