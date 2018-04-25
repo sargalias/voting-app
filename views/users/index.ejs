@@ -22,7 +22,9 @@
             </div>
             <div class="buttons">
                 <button class="btn btn-warning text-white mr-2">Add option</button>
-                <button class="btn btn-danger">Delete</button>
+                <form method="POST" action="/polls/<%= poll.id %>?_method=DELETE">
+                    <button class="btn btn-danger">Delete</button>
+                </form>
             </div>
         </div>
     <% } %>
