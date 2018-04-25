@@ -8,6 +8,10 @@ const minOptions = parseInt(minOptionsStr);
 addOptionBtn.addEventListener('click', addOption);
 removeOptionBtn.addEventListener('click', removeOption);
 
+// Init remove option button
+if (optionsContainer.children.length > minOptions) {
+    removeOptionBtn.removeAttribute('disabled');
+}
 
 function addOption() {
     let attr = {
@@ -29,7 +33,7 @@ function addOption() {
 
 function removeOption() {
     if (optionsContainer.children.length > minOptions) {
-        optionsContainer.removeChild(optionsContainer.lastChild);
+        optionsContainer.removeChild(optionsContainer.lastElementChild);
     }
     if (optionsContainer.children.length <= minOptions) {
         removeOptionBtn.setAttribute('disabled', true);
