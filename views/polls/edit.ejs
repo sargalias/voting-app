@@ -2,18 +2,23 @@
 
 
 <div class="container mt-5">
-    <div class="jumbotron bg-white">
+    <div class="jumbotron bg-light user-poll">
         <h1 class="mb-3">Add options</h1>
-        <p>Title: <%- poll.title %></p>
-        <p>Current options:</p>
-        <ul>
-            <% poll.results.forEach((result) => { %>
-                <li><%- result.option %> - <%= result.votes %> <%= result.votes === 1 ? 'vote' : 'votes' %></li>
-            <% }); %>
-        </ul>
+        <p><strong>Title:</strong> <%- poll.title %></p>
+        <p><strong>Current options:</strong></p>
+        <div class="options">
+            <ul>
+                <% poll.results.forEach((res) => { %>
+                <li>
+                    <span><%- res.option %></span>
+                    <span><%= res.votes %></span>
+                </li>
+                <% }); %>
+            </ul>
+        </div>
         <form action="/polls/<%= poll.id %>?_method=PUT" method="POST" class="mb-sm-3">
-            <div class="form-group">
-                <label for="option">New options</label>
+            <div class="form-group mt-2">
+                <p><strong>New options:</strong></p>
                 <div id="options-container" data-min-options="1">
                     <% if ( locals.data && locals.data.options ) { %>
                         <% data.options.forEach((option) => { %>
