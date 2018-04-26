@@ -34,7 +34,7 @@ function userOwnsPoll(req, res, next) {
         }
     }
     let err = new Error('Not authorized');
-    err.status = 500;
+    err.status = 403;
     return next(err);
 }
 
