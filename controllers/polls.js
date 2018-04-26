@@ -4,6 +4,7 @@ const Poll = require('../models/poll');
 const User = require('../models/user');
 const async = require('async');
 const pch = pollControllerHelpers = require('../helpers/poll-controller');
+const mongoose = require('mongoose');
 
 
 // Index
@@ -172,7 +173,12 @@ module.exports.vote = [
                 return res.redirect('back');
             }
         } else if (req.session) {
-            console.log(req.session);
+            for (let sessionPollId of req.session.pollsVotedFor) {
+                if (sessionPollId === req.params.poll_id) {
+                    req.flash('danger', "You've already voted on this poll and can't vote again.");
+                    return res.redirect('back');
+                }
+            }
         }
 
         // Otherwise, check cookie not voted
@@ -196,6 +202,9 @@ module.exports.vote = [
                         }
                         return res.redirect('back');
                     });
+                } else {
+                    req.session.pollsVotedFor.push(req.params.poll_id);
+                    res.redirect('back');
                 }
             });
         });
