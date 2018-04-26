@@ -171,6 +171,8 @@ module.exports.vote = [
                 req.flash('danger', "You've already voted on this poll and can't vote again.");
                 return res.redirect('back');
             }
+        } else if (req.session) {
+            console.log(req.session);
         }
 
         // Otherwise, check cookie not voted

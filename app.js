@@ -27,7 +27,11 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
-    cookie: {secure: process.env.NODE_ENV === 'production'}
+    rolling: true,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 1000 * 60 * 60 * 24 * 30 // 1 month cookie
+    }
 }));
 
 // Connect flash and express messages
@@ -47,6 +51,12 @@ app.use((req, res, next) => {
     next()
 });
 
+
+// Middleware for poll voting functionality
+app.use((req, res, next) => {
+    req.session.pollsVotedFor = req.session.pollsVotedFor || [];
+    next();
+});
 
 // Routes
 const indexRoutes = require('./routes/index');
