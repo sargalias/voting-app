@@ -85,6 +85,7 @@ module.exports.show = (req, res, next) => {
         let pollData = pch.parsePollData(poll);
         // Add poll_id to options passed to view
         pollData.poll_id = req.params.poll_id;
+        pollData.poll_url = req.protocol + '://' + req.get('host') + req.originalUrl;
         res.render('polls/show', pollData);
     });
 };
