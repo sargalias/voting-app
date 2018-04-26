@@ -7,7 +7,7 @@
 
         <div class="col-md-6 pr-lg-5">
             <h1 class="mb-3"><%- title %></h1>
-            <form action="" class="mb-sm-3">
+            <form action="/polls/<%= poll_id %>/vote" method="POST" class="mb-sm-3">
                 <div class="form-group">
                     <select name="" id="" class="custom-select">
                         <option value="" selected disabled hidden>Choose an option...</option>

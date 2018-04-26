@@ -82,6 +82,8 @@ module.exports.show = (req, res, next) => {
             return next(err);
         }
         let pollData = pch.parsePollData(poll);
+        // Add poll_id to options passed to view
+        pollData.poll_id = req.params.poll_id;
         res.render('polls/show', pollData);
     });
 };
@@ -154,3 +156,7 @@ module.exports.delete = (req, res, next) => {
     });
 };
 
+// Vote
+module.exports.vote = (req, res, next) => {
+
+};

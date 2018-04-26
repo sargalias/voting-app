@@ -11,6 +11,8 @@ router.post('/', ah.isLoggedInMessage("Log in to create new polls"), pc.create);
 
 router.get('/:poll_id', pc.show);
 
+router.post('/:poll_id/vote', pc.vote);
+
 router.get('/:poll_id/edit',
     ah.isLoggedIn,
     ah.userOwnsPoll,
