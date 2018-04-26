@@ -164,34 +164,42 @@ module.exports.vote = [
     sanitizeBody('option').trim().escape()
     ,
     (req, res, next) => {
-    // Check the user hasn't voted on this poll before.
-    // if (req.user) {
-    //     if (containsPollId(req.user.pollsVotedOn)) {
-    //         req.flash('danger', "You've already voted on this poll and can't vote again.");
-    //         return res.back();
-    //     }
-    // }
-    // Check the IP address hasn't voted on this poll before
-    // ------------------------
-    const {option} = matchedData(req);
 
-      Poll.findById(req.params.poll_id, (err, poll) => {
-          if (poll.containsOption(option)) {
-              poll.voteForOption(option);
-              poll.save((err) => {
-                  console.log(poll);
-              });
-          } else {
-              req.flash('danger', 'Poll option not found');
-              return res.redirect('back');
-          }
-          res.send('bob');
-      });
-    // See if it matches exactly.
-        // If not, error message + redirect to poll show.
-        // If yes, save the vote.
-            // Then save the user or IP address with a reference to the poll.
-}];
+        // Check the user hasn't voted on this poll before.
+        if (req.user) {
+            if (req.user.hasVotedFor(req.params.poll_id)) {
+                req.flash('danger', "You've already voted on this poll and can't vote again.");
+                return res.redirect('back');
+            }
+        }
+
+        // Otherwise, check cookie not voted
+
+        // Vote
+        const {option} = matchedData(req);
+        Poll.findById(req.params.poll_id, (err, poll) => {
+            if (!poll.containsOption(option)) {
+                req.flash('danger', 'Poll option not found');
+                return res.redirect('back');
+            }
+            poll.voteForOption(option);
+            poll.save((err) => {
+                if (err) {
+                    return next(err);
+                }
+                if (req.user) {
+                    req.user.addVotedFor(req.params.poll_id, (err) => {
+                        if (err) {
+                            return next(err);
+                        }
+                        return res.redirect('back');
+                    });
+                }
+            });
+        });
+        // Store information no user, or store information on cookie.
+    }
+];
 
 // function containsPollId(arr, id) {
 //     for (let poll_id of arr) {
