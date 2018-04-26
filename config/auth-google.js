@@ -5,7 +5,7 @@ module.exports = function(passport) {
     passport.use(new GoogleStrategy({
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: "/auth/google/callback"
+            callbackURL: process.env.DOMAIN_URI + "/auth/google/callback"
         },
         function(accessToken, refreshToken, profile, done) {
             User.findOne({googleId: profile.id}, (err, user) => {
