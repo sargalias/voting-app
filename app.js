@@ -8,6 +8,7 @@ const session = require('express-session');
 const passport = require('passport');
 const flash = require('connect-flash');
 const methodOverride = require('method-override');
+const MemoryStore = require('memorystore')(session);
 const db = require('./config/database');
 
 
@@ -24,13 +25,16 @@ app.use(methodOverride('_method'));
 
 // Session
 app.use(session({
+    store: new MemoryStore({
+        checkPeriod: 1000 * 60 * 60 * 24,
+    }),
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     rolling: true,
     cookie: {
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 1000 * 60 * 60 * 24 * 30 // 1 month cookie
+        maxAge: 1000 * 60 * 60 * 24 // 1 month cookie
     }
 }));
 
