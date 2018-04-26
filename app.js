@@ -24,8 +24,7 @@ app.use(express.urlencoded({extended: false}));
 app.use(methodOverride('_method'));
 
 // Session
-app.use('trust proxy', 1);
-app.use(session({
+let sess = {
     store: new MemoryStore({
         checkPeriod: 1000 * 60 * 60 * 24,
     }),
@@ -37,7 +36,12 @@ app.use(session({
         secure: process.env.NODE_ENV === 'production',
         maxAge: 1000 * 60 * 60 * 24 // 1 month cookie
     }
-}));
+};
+if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1);
+    sess.cookie.secure = true;
+}
+app.use(session(sess));
 
 // Connect flash and express messages
 app.use(flash());
