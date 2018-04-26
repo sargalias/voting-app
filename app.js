@@ -24,6 +24,7 @@ app.use(express.urlencoded({extended: false}));
 app.use(methodOverride('_method'));
 
 // Session
+app.use('trust proxy', 1);
 app.use(session({
     store: new MemoryStore({
         checkPeriod: 1000 * 60 * 60 * 24,
