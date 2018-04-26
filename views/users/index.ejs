@@ -21,7 +21,7 @@
                 </ul>
             </div>
             <div class="buttons">
-                <a class="btn btn-warning text-white mr-2" href="/polls/<%= poll.id %>/edit" data-id="<% poll.id %>">Add options</a>
+                <a class="btn btn-warning mr-2" href="/polls/<%= poll.id %>/edit" data-id="<% poll.id %>">Add options</a>
                 <form method="POST" action="/polls/<%= poll.id %>?_method=DELETE">
                     <button class="btn btn-danger">Delete</button>
                 </form>

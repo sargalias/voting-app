@@ -34,7 +34,7 @@ let sess = {
     rolling: true,
     cookie: {
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 1000 * 60 * 60 * 24 // 1 month cookie
+        maxAge: 1000 * 60 * 60 * 24
     }
 };
 if (process.env.NODE_ENV === 'production') {

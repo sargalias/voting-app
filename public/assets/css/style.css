@@ -58,4 +58,7 @@ button[disabled] {
 .user-poll .buttons .btn {
   margin-top: 0.5rem; }
 
+.btn-warning {
+  color: #fff; }
+
 /*# sourceMappingURL=style.css.map */
