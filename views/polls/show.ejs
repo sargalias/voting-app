@@ -9,7 +9,7 @@
             <h1 class="mb-3"><%- title %></h1>
             <form action="/polls/<%= poll_id %>/vote" method="POST" class="mb-sm-3">
                 <div class="form-group">
-                    <select name="" id="" class="custom-select">
+                    <select name="option" id="" class="custom-select">
                         <option value="" selected disabled hidden>Choose an option...</option>
                         <% options.forEach((option) => { %>
                             <option value="<%- option %>"><%= option %></option>

@@ -7,6 +7,12 @@ const UserSchema = new mongoose.Schema({
             ref: "Poll"
         }
     ],
+    pollsVotedFor: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Poll"
+        }
+    ],
     googleId: {type: String, required: true}
 });
 

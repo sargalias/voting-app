@@ -9,4 +9,22 @@ const PollSchema = new mongoose.Schema({
     user: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true}
 });
 
+PollSchema.methods.containsOption = function(option) {
+    for (let result of this.results) {
+        if (result.option === option) {
+            return true;
+        }
+    }
+    return false;
+};
+
+PollSchema.methods.voteForOption = function(option) {
+    for (let result of this.results) {
+        if (result.option === option) {
+            result.votes++;
+        }
+    }
+    return false;
+};
+
 module.exports = mongoose.model('Poll', PollSchema);

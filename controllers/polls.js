@@ -157,6 +157,47 @@ module.exports.delete = (req, res, next) => {
 };
 
 // Vote
-module.exports.vote = (req, res, next) => {
+module.exports.vote = [
+    body('option').trim()
+        .isLength({min: 1}).withMessage('Option is required')
+    ,
+    sanitizeBody('option').trim().escape()
+    ,
+    (req, res, next) => {
+    // Check the user hasn't voted on this poll before.
+    // if (req.user) {
+    //     if (containsPollId(req.user.pollsVotedOn)) {
+    //         req.flash('danger', "You've already voted on this poll and can't vote again.");
+    //         return res.back();
+    //     }
+    // }
+    // Check the IP address hasn't voted on this poll before
+    // ------------------------
+    const {option} = matchedData(req);
 
-};
+      Poll.findById(req.params.poll_id, (err, poll) => {
+          if (poll.containsOption(option)) {
+              poll.voteForOption(option);
+              poll.save((err) => {
+                  console.log(poll);
+              });
+          } else {
+              req.flash('danger', 'Poll option not found');
+              return res.redirect('back');
+          }
+          res.send('bob');
+      });
+    // See if it matches exactly.
+        // If not, error message + redirect to poll show.
+        // If yes, save the vote.
+            // Then save the user or IP address with a reference to the poll.
+}];
+
+// function containsPollId(arr, id) {
+//     for (let poll_id of arr) {
+//         if (poll_id.equals(id)) {
+//             return true;
+//         }
+//     }
+//     return false;
+// }
