@@ -61,4 +61,23 @@ button[disabled] {
 .btn-warning {
   color: #fff; }
 
+.twitter-btn {
+  background-color: #1b95e0;
+  display: inline-flex;
+  align-items: center;
+  width: auto; }
+  .twitter-btn:hover, .twitter-btn:focus, .twitter-btn:active {
+    background-color: #1886c9 !important;
+    border-color: #1886c9 !important; }
+  .twitter-btn:focus, .twitter-btn:active {
+    box-shadow: 0 0 0 0.2rem #45aae9 !important; }
+
+.twitter-icon {
+  display: block;
+  height: 1rem;
+  width: 1rem;
+  background: transparent 0 0 no-repeat;
+  background-image: url("/assets/img/twitter.png");
+  background-size: 100% 100%; }
+
 /*# sourceMappingURL=style.css.map */

@@ -94,3 +94,26 @@ button[disabled] {
 .btn-warning {
   color: #fff;
 }
+
+.twitter-btn {
+  background-color: #1b95e0;
+  display: inline-flex;
+  align-items: center;
+  width: auto;
+  &:hover, &:focus, &:active {
+    background-color: darken(#1b95e0, 5) !important;
+    border-color: darken(#1b95e0, 5) !important;
+  }
+  &:focus, &:active {
+    box-shadow: 0 0 0 0.2rem lighten(#1b95e0, 10) !important;
+  }
+}
+
+.twitter-icon {
+  display: block;
+  height: 1rem;
+  width: 1rem;
+  background: transparent 0 0 no-repeat;
+  background-image: url('/assets/img/twitter.png');
+  background-size: 100% 100%;
+}
