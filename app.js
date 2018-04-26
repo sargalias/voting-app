@@ -53,12 +53,22 @@ const indexRoutes = require('./routes/index');
 const pollRoutes = require('./routes/polls');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/user');
-const miscRoutes = require('./routes/misc');
 app.use('/', indexRoutes);
 app.use('/polls', pollRoutes);
 app.use('/', authRoutes);
 app.use('/my-polls', userRoutes);
-app.use('/', miscRoutes);
+
+// Catch all route
+app.get('*', (req, res, next) => {
+    let err = new Error('Page not found');
+    err.status = 404;
+    return next(err);
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+    res.render('index/error', {error: err});
+});
 
 
 const PORT = process.env.PORT || 3000;
