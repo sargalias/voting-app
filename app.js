@@ -11,6 +11,7 @@ const methodOverride = require('method-override');
 const MemoryStore = require('memorystore')(session);
 const db = require('./config/database');
 const helmet = require('helmet');
+const compression = require('compression');
 
 
 const app = express();
@@ -19,6 +20,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Helmet
 app.use(helmet());
+
+// Compression
+app.use(compression());
 
 // Body Parser
 app.use(express.json());
