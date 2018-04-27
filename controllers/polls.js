@@ -82,6 +82,11 @@ module.exports.show = (req, res, next) => {
         if (err) {
             return next(err);
         }
+        if (!poll) {
+            err = new Error('Poll could not be found');
+            err.status = 404;
+            return next(err);
+        }
         let pollData = pch.parsePollData(poll);
         // Add poll_id to options passed to view
         pollData.poll_id = req.params.poll_id;
