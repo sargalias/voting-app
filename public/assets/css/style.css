@@ -59,7 +59,7 @@ button[disabled] {
   margin-top: 0.5rem; }
 
 .btn-warning {
-  color: #fff; }
+  color: #fff !important; }
 
 .twitter-btn {
   background-color: #1b95e0;
