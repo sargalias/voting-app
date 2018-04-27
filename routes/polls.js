@@ -5,6 +5,8 @@ const ah = authHelpers = require('../helpers/auth');
 
 router.get('/', pc.index);
 
+router.get('/page/:pageNumber', pc.index);
+
 router.get('/new', ah.isLoggedInMessage("Log in to create new polls."), pc.new);
 
 router.post('/', ah.isLoggedInMessage("Log in to create new polls"), pc.create);

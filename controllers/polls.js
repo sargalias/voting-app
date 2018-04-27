@@ -4,20 +4,61 @@ const Poll = require('../models/poll');
 const User = require('../models/user');
 const async = require('async');
 const pch = pollControllerHelpers = require('../helpers/poll-controller');
+const {POLLS_PER_PAGE} = require('../config/poll-pagination');
 const mongoose = require('mongoose');
 
 
 // Index
+function handlePageNumber(req, res, next) {
+    // Comes from route /polls and /polls/page/:pageNumber
+    let pageNumber = req.params.pageNumber;
+    if (pageNumber === undefined) {
+        return 0;
+    }
+    pageNumber = parseInt(req.params.pageNumber);
+    if (pageNumber < 1) {
+        let err = new Error('Page number must be at least 1');
+        err.status = 403;
+        next(err);
+        return;
+    }
+    pageNumber--;
+    return pageNumber;
+}
+
 module.exports.index = (req, res, next) => {
-    Poll.find({})
-        .sort({created_at: -1})
-        .skip(2)
-        // .limit(1)
-        .exec((err, polls) => {
+    const pageNumber = handlePageNumber(req, res, next);
+    if (pageNumber === undefined) {
+        return;
+    }
+
+    async.parallel({
+        polls: function(callback) {
+            Poll.find({})
+                .sort({created_at: -1})
+                .skip(pageNumber * POLLS_PER_PAGE)
+                .limit(POLLS_PER_PAGE)
+                .exec(callback);
+        },
+        count: function(callback) {
+            Poll.find({})
+                .count()
+                .exec(callback);
+        }
+    }, function(err, results) {
         if (err) {
             return next(err);
         }
-        res.render('polls/index', {polls: polls});
+        if (results.polls.length === 0) {
+            err = new Error('This page has no polls');
+            err.status = 404;
+            return next(err);
+        }
+        res.render('polls/index', {
+            polls: results.polls,
+            pageNumber: pageNumber,
+            totalPages: Math.ceil(results.count / POLLS_PER_PAGE)
+        });
     });
 };
 
