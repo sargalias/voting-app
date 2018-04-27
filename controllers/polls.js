@@ -9,7 +9,9 @@ const mongoose = require('mongoose');
 
 // Index
 module.exports.index = (req, res, next) => {
-    Poll.find({}, (err, polls) => {
+    Poll.find({})
+        .sort({created_at: 1})
+        .exec((err, polls) => {
         if (err) {
             return next(err);
         }
