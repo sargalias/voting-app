@@ -7,7 +7,7 @@
 
         <div class="col-md-6 pr-lg-5">
             <h1 class="mb-3"><%- title %></h1>
-            <form action="/polls/<%= poll_id %>/vote" method="POST" class="mb-sm-3">
+            <form action="/polls/<%= poll_id %>/vote" method="POST" class="mb-3">
                 <div class="form-group">
                     <select name="option" id="" class="custom-select">
                         <option value="" selected disabled hidden>Choose an option...</option>
@@ -20,7 +20,7 @@
 
             </form>
             <a
-                class="btn btn-info twitter-btn"
+                class="btn btn-info twitter-btn mb-3"
                 href="https://twitter.com/intent/tweet?text=Poll:%20<%= encodeURIComponent(title + " - ") + poll_url; %>"
             ><i class="twitter-icon mr-1"></i><span>Share on Twitter</span></a>
         </div>
