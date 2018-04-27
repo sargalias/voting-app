@@ -10,11 +10,15 @@ const flash = require('connect-flash');
 const methodOverride = require('method-override');
 const MemoryStore = require('memorystore')(session);
 const db = require('./config/database');
+const helmet = require('helmet');
 
 
 const app = express();
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Helmet
+app.use(helmet());
 
 // Body Parser
 app.use(express.json());
@@ -34,7 +38,7 @@ let sess = {
     rolling: true,
     cookie: {
         secure: process.env.NODE_ENV === 'production',
-        maxAge: 1000 * 60 * 60 * 24
+        maxAge: 1000 * 60 * 60 * 24,
     }
 };
 if (process.env.NODE_ENV === 'production') {
