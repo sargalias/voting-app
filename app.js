@@ -39,6 +39,8 @@ let sess = {
     cookie: {
         secure: process.env.NODE_ENV === 'production',
         maxAge: 1000 * 60 * 60 * 24,
+        httpOnly: true,
+        domain: process.env.DOMAIN_URI
     }
 };
 if (process.env.NODE_ENV === 'production') {
