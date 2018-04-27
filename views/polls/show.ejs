@@ -21,7 +21,8 @@
             </form>
             <a
                 class="btn btn-info twitter-btn mb-3"
-                href="https://twitter.com/intent/tweet?text=Poll:%20<%= encodeURIComponent(title + " - ") + poll_url; %>"
+                href="https://twitter.com/intent/tweet?text=Poll:%20
+            <%- encodeURI(title) + '%20-%20' + poll_url %>"
             ><i class="twitter-icon mr-1"></i><span>Share on Twitter</span></a>
         </div>
 
