@@ -41,15 +41,14 @@ let sess = {
     saveUninitialized: true,
     rolling: true,
     cookie: {
-        secure: process.env.NODE_ENV === 'production',
         maxAge: 1000 * 60 * 60 * 24,
         httpOnly: true,
-        domain: process.env.DOMAIN_URI
     }
 };
 if (process.env.NODE_ENV === 'production') {
     app.set('trust proxy', 1);
     sess.cookie.secure = true;
+    sess.cookie.domain = process.env.DOMAIN;
 }
 app.use(session(sess));
 
