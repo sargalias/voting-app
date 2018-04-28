@@ -9,25 +9,8 @@ const mongoose = require('mongoose');
 
 
 // Index
-function handlePageNumber(req, res, next) {
-    // Comes from route /polls and /polls/page/:pageNumber
-    let pageNumber = req.params.pageNumber;
-    if (pageNumber === undefined) {
-        return 0;
-    }
-    pageNumber = parseInt(req.params.pageNumber);
-    if (pageNumber < 1) {
-        let err = new Error('Page number must be at least 1');
-        err.status = 403;
-        next(err);
-        return;
-    }
-    pageNumber--;
-    return pageNumber;
-}
-
 module.exports.index = (req, res, next) => {
-    const pageNumber = handlePageNumber(req, res, next);
+    const pageNumber = pch.handlePageNumber(req, res, next);
     if (pageNumber === undefined) {
         return;
     }
@@ -72,54 +55,9 @@ module.exports.create = [];
 pch.newPollValidation.forEach((middleware) => {
     module.exports.create.push(middleware);
 });
-module.exports.create.push(createPoll);
+module.exports.create.push(pch.createPoll);
 // Create end
 
-function createNewPollParent(data, req) {
-    return function(callback) {
-        let newPoll = Poll({});
-        newPoll.title = data.title;
-        newPoll.results = [];
-        newPoll.user = req.user;
-        data.options.forEach((option) => {
-            newPoll.results.push({option: option});
-        });
-        callback(null, newPoll);
-    }
-}
-
-function createPoll(req, res, next) {
-    const errors = validationResult(req);
-    const data = matchedData(req);
-    if (!errors.isEmpty()) {
-        return res.render('polls/new', {errors: errors.array(), data: data});
-    }
-    async.waterfall([
-        // Create poll, hasn't been saved yet
-        createNewPollParent(data, req),
-
-        // Save newPoll + add to user and save user.
-        function(newPoll, callback) {
-            async.parallel({
-                savePoll: function(callback) {
-                    newPoll.save(callback);
-                },
-                updateUser: function(callback) {
-                    req.user.polls.push(newPoll);
-                    req.user.save(callback);
-                }
-            }, function(err, results) {
-                callback(err, results);
-            });
-        }
-    ], function(err, results) {
-        if (err) {
-            return next(err);
-        }
-        req.flash('success', 'Poll created');
-        res.redirect('/my-polls');
-    });
-}
 
 // Show
 module.exports.show = (req, res, next) => {
@@ -140,6 +78,7 @@ module.exports.show = (req, res, next) => {
     });
 };
 
+
 // Edit
 module.exports.edit = (req, res, next) => {
     Poll.findById(req.params.poll_id, (err, poll) => {
@@ -156,43 +95,15 @@ module.exports.edit = (req, res, next) => {
 };
 
 
-
-// Edit poll middleware
+// Update poll middleware
 module.exports.update = [
     pch.editPollPrep
 ];
 pch.editPollValidation.forEach((middleware) => {
     module.exports.update.push(middleware);
 });
-module.exports.update.push(updatePoll);
+module.exports.update.push(pch.updatePoll);
 
-
-function updatePoll(req, res, next) {
-    const errors = validationResult(req);
-    const data = matchedData(req);
-    Poll.findById(req.params.poll_id, (err, poll) => {
-        if (err) {
-            return next(err);
-        }
-        if (!poll) {
-            let err = new Error('Poll could not be found');
-            err.status = 404;
-            return next(err);
-        }
-        if (!errors.isEmpty()) {
-            return res.render('polls/edit', {errors: errors.array(), poll: poll, data: data});
-        }
-        data.options.forEach((option) => {
-            poll.results.push({option: option});
-        });
-        poll.save((err) => {
-            if (err) {
-                return next(err);
-            }
-            res.redirect('/my-polls');
-        });
-    });
-}
 
 // Delete
 module.exports.delete = (req, res, next) => {

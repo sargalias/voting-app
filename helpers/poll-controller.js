@@ -1,7 +1,71 @@
 const { body, validationResult } = require('express-validator/check');
 const { matchedData, sanitizeBody } = require('express-validator/filter');
 const Poll = require('../models/poll');
+const async = require('async');
 
+
+module.exports.handlePageNumber = (req, res, next) => {
+    // Comes from route /polls and /polls/page/:pageNumber
+    let pageNumber = req.params.pageNumber;
+    if (pageNumber === undefined) {
+        return 0;
+    }
+    pageNumber = parseInt(req.params.pageNumber);
+    if (pageNumber < 1) {
+        let err = new Error('Page number must be at least 1');
+        err.status = 403;
+        next(err);
+        return;
+    }
+    pageNumber--;
+    return pageNumber;
+};
+
+function createNewPollParent(data, req) {
+    return function(callback) {
+        let newPoll = Poll({});
+        newPoll.title = data.title;
+        newPoll.results = [];
+        newPoll.user = req.user;
+        data.options.forEach((option) => {
+            newPoll.results.push({option: option});
+        });
+        callback(null, newPoll);
+    }
+}
+
+module.exports.createPoll = (req, res, next) => {
+    const errors = validationResult(req);
+    const data = matchedData(req);
+    if (!errors.isEmpty()) {
+        return res.render('polls/new', {errors: errors.array(), data: data});
+    }
+    async.waterfall([
+        // Create poll, hasn't been saved yet
+        createNewPollParent(data, req),
+
+        // Save newPoll + add to user and save user.
+        function(newPoll, callback) {
+            async.parallel({
+                savePoll: function(callback) {
+                    newPoll.save(callback);
+                },
+                updateUser: function(callback) {
+                    req.user.polls.push(newPoll);
+                    req.user.save(callback);
+                }
+            }, function(err, results) {
+                callback(err, results);
+            });
+        }
+    ], function(err, results) {
+        if (err) {
+            return next(err);
+        }
+        req.flash('success', 'Poll created');
+        res.redirect('/my-polls');
+    });
+};
 
 module.exports.editPollPrep = (req, res, next) => {
     if (req.body && !Array.isArray(req.body.options)) {
@@ -48,6 +112,33 @@ module.exports.editPollValidation = [
     sanitizeBody('options.*').trim().escape(),
 ];
 
+
+module.exports.updatePoll = (req, res, next) => {
+    const errors = validationResult(req);
+    const data = matchedData(req);
+    Poll.findById(req.params.poll_id, (err, poll) => {
+        if (err) {
+            return next(err);
+        }
+        if (!poll) {
+            let err = new Error('Poll could not be found');
+            err.status = 404;
+            return next(err);
+        }
+        if (!errors.isEmpty()) {
+            return res.render('polls/edit', {errors: errors.array(), poll: poll, data: data});
+        }
+        data.options.forEach((option) => {
+            poll.results.push({option: option});
+        });
+        poll.save((err) => {
+            if (err) {
+                return next(err);
+            }
+            res.redirect('/my-polls');
+        });
+    });
+};
 
 module.exports.deleteUserPollParent = (req) => {
     return function(callback) {
@@ -120,3 +211,4 @@ module.exports.vote = (req, res, next) => {
         });
     });
 };
+
