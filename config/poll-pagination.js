@@ -1,3 +1,3 @@
 module.exports = {
-    POLLS_PER_PAGE: 10
+    POLLS_PER_PAGE: 8
 };
