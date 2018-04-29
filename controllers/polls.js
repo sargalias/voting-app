@@ -51,7 +51,7 @@ module.exports.new = (req, res, next) => {
 };
 
 // Create
-module.exports.create = [];
+module.exports.create = [pch.pollValidationPrep];
 pch.newPollValidation.forEach((middleware) => {
     module.exports.create.push(middleware);
 });
@@ -97,7 +97,7 @@ module.exports.edit = (req, res, next) => {
 
 // Update poll middleware
 module.exports.update = [
-    pch.editPollPrep
+    pch.pollValidationPrep
 ];
 pch.editPollValidation.forEach((middleware) => {
     module.exports.update.push(middleware);

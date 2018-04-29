@@ -67,7 +67,7 @@ module.exports.createPoll = (req, res, next) => {
     });
 };
 
-module.exports.editPollPrep = (req, res, next) => {
+module.exports.pollValidationPrep = (req, res, next) => {
     if (req.body && !Array.isArray(req.body.options)) {
         req.body.options = [req.body.options];
     }
